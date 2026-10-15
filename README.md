@@ -1,6 +1,6 @@
 # ReviewDesk
 
-A responsive creative review and approval workspace for designers and media teams. The first app slice includes the landing and auth pages, project dashboard, project CRUD flows, a reviewer portal, comments, approval actions, in-app notifications, and retention settings.
+A responsive creative review and approval workspace for designers and media teams. It includes account-based organisation workspaces, reviewer assignments and queue counts, login-free personal review links, project management, file previews, comments, approvals, in-app notifications, and file retention settings.
 
 ## Run locally
 
@@ -9,20 +9,20 @@ npm install
 npm run dev
 ```
 
-Without environment variables, ReviewDesk runs in **local demo mode**. Sign up with any email and a password of at least six characters. Demo projects and activity are saved in this browser. Uploaded files are previewable in the current browser session; this mode is not secure storage and should not be used for real client files.
+Without environment variables, ReviewDesk runs in **local demo mode** with a sample Khaydave Media workspace and teammate directory. Sign up with any email and a password of at least six characters, then create a project and assign reviewers by name or `@username`. Demo projects and activity are saved in this browser. Uploaded files are previewable in the current browser session; this mode is not shared across devices and should not be used for real client files.
 
 ## Supabase setup
 
-1. Create a Supabase project and run [`supabase/migrations/0001_reviewdesk.sql`](supabase/migrations/0001_reviewdesk.sql) in its SQL editor.
+1. Create a Supabase project and run [`supabase/migrations/0001_reviewdesk.sql`](supabase/migrations/0001_reviewdesk.sql), then [`supabase/migrations/0002_team_reviews.sql`](supabase/migrations/0002_team_reviews.sql), in its SQL editor.
 2. Add the project URL and public anon key to `.env` using [`.env.example`](.env.example).
 3. Enable email and password authentication in Supabase Auth. Email delivery is only used for Supabase account verification or password recovery; ReviewDesk itself sends no email, WhatsApp, or SMS notifications.
 4. Set your deployed site URL and local development URL in Supabase Auth's allowed redirect URLs.
 
-The migration creates RLS-protected user, project, file, comment, and notification tables. Guest review access is limited to token-checked RPC functions; guests do not need an account.
+The migrations create RLS-protected user, organisation, membership, project, file, assignment, comment, and notification tables. Each account starts with a workspace and can join another through a shared workspace invite link. Project owners can assign reviewers from their workspace directory. Each assigned reviewer receives a unique token link that identifies their response and works without login; their dashboard count updates when they next sign in. Guest review access is limited to token-checked RPC functions.
 
 ## Cloudflare R2 and Worker
 
-The Worker source is in [`workers/src/index.ts`](workers/src/index.ts). It streams files into a private R2 bucket, checks the Supabase access token and project ownership for uploads, serves files only to the project owner or a reviewer with that project's unique token, and runs hourly expiry/reminder jobs. The Worker has a 95 MB per-file limit in this initial implementation.
+The Worker source is in [`workers/src/index.ts`](workers/src/index.ts). It streams files into a private R2 bucket, checks the Supabase access token and project ownership for uploads, serves files only to the project owner or a reviewer with a valid project or assigned-review token, and runs hourly expiry/reminder jobs. The Worker has a 95 MB per-file limit in this initial implementation.
 
 1. Create a private R2 bucket named `reviewdesk-files` (or change `bucket_name` in `workers/wrangler.toml`).
 2. In `workers/`, install and deploy with Wrangler:

@@ -1,36 +1,80 @@
 import { supabase } from './supabase'
-import type { AppState, Project, ProjectFile, ProjectStatus, ReviewComment, User } from '../types'
+import type { AppState, Project, ProjectFile, ProjectStatus, ReviewComment, User, WorkspaceMember } from '../types'
 
 const workerUrl = (import.meta.env.VITE_UPLOAD_WORKER_URL as string | undefined)?.replace(/\/$/, '')
 type CloudFile = { id: string; name: string; byte_size: number; content_type: string; uploaded_at: string; version: number }
 type CloudComment = { id: string; author_name: string; body: string; created_at: string; kind: ReviewComment['kind'] }
-type CloudProject = { id: string; title: string; client: string; description: string; status: ProjectStatus; updated_at: string; due_date: string | null; retention_days: number; review_token: string | null; allow_download: boolean; project_files?: CloudFile[]; review_comments?: CloudComment[] }
+type CloudAssignment = { id: string; reviewer_id: string; reviewer_name: string; username: string; token: string; status: 'Pending' | 'Changes requested' | 'Approved'; responded_at: string | null }
+type CloudProject = { id: string; owner_id: string; title: string; client: string; description: string; status: ProjectStatus; updated_at: string; due_date: string | null; retention_days: number; review_token: string | null; allow_download: boolean; project_files?: CloudFile[]; review_comments?: CloudComment[]; review_assignments?: CloudAssignment[] }
 type CloudNotice = { id: string; title: string; detail: string; created_at: string; read_at: string | null; project_id: string | null }
 
 const mapFile = (f: CloudFile): ProjectFile => ({ id: f.id, name: f.name, size: Number(f.byte_size), type: f.content_type, uploadedAt: f.uploaded_at, version: f.version })
 const mapComment = (c: CloudComment): ReviewComment => ({ id: c.id, author: c.author_name, body: c.body, createdAt: c.created_at, kind: c.kind })
-const mapProject = (p: CloudProject): Project => ({ id: p.id, title: p.title, client: p.client, description: p.description, status: p.status, updatedAt: p.updated_at, dueDate: p.due_date || undefined, retentionDays: p.retention_days, reviewToken: p.review_token || undefined, allowDownload: p.allow_download, files: (p.project_files || []).map(mapFile), comments: (p.review_comments || []).map(mapComment) })
+const mapProject = (p: CloudProject): Project => ({ id: p.id, ownerId: p.owner_id, title: p.title, client: p.client, description: p.description, status: p.status, updatedAt: p.updated_at, dueDate: p.due_date || undefined, retentionDays: p.retention_days, reviewToken: p.review_token || undefined, allowDownload: p.allow_download, files: (p.project_files || []).map(mapFile), comments: (p.review_comments || []).map(mapComment), assignments: (p.review_assignments || []).map(a => ({ id: a.id, reviewerId: a.reviewer_id, reviewerName: a.reviewer_name, username: a.username, token: a.token, status: a.status, respondedAt: a.responded_at || undefined })) })
 
 export async function loadCloudState(user: User): Promise<AppState> {
   if (!supabase) throw new Error('Supabase is not configured.')
-  const [projectsResult, noticesResult] = await Promise.all([
-    supabase.from('projects').select('*, project_files(*), review_comments(*)').order('updated_at', { ascending: false }),
+  const memberships = await supabase.from('organization_members').select('organization_id, role, created_at, organizations(id, name, invite_token)').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1)
+  if (memberships.error) throw memberships.error
+  const current = memberships.data?.[0] as unknown as { organization_id: string; role: string; organizations: { id: string; name: string; invite_token: string } | null } | undefined
+  if (!current?.organizations) throw new Error('Your account is not connected to a workspace yet. Use a workspace invite link or contact its admin.')
+  const organizationId = current.organization_id
+  const [projectsResult, noticesResult, membersResult, profileResult] = await Promise.all([
+    supabase.from('projects').select('*, project_files(*), review_comments(*), review_assignments(*)').eq('organization_id', organizationId).order('updated_at', { ascending: false }),
     supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(100),
+    supabase.from('organization_members').select('user_id, role, profiles(display_name, username)').eq('organization_id', organizationId),
+    supabase.from('profiles').select('display_name, username').eq('id', user.id).maybeSingle(),
   ])
   if (projectsResult.error) throw projectsResult.error
   if (noticesResult.error) throw noticesResult.error
+  if (membersResult.error) throw membersResult.error
+  if (profileResult.error) throw profileResult.error
   const projects = (projectsResult.data as CloudProject[]).map(mapProject)
   const notices = (noticesResult.data as CloudNotice[]).map(n => ({ id: n.id, title: n.title, detail: n.detail, time: new Date(n.created_at).toLocaleString(), read: Boolean(n.read_at), projectId: n.project_id || undefined }))
-  return { user, projects, notices }
+  const members: WorkspaceMember[] = (membersResult.data || []).flatMap(raw => {
+    const member = raw as unknown as { user_id: string; role: WorkspaceMember['role']; profiles: { display_name: string; username: string } | null }
+    return member.profiles ? [{ userId: member.user_id, name: member.profiles.display_name || member.profiles.username, username: member.profiles.username, role: member.role }] : []
+  })
+  const profile = profileResult.data as { display_name?: string; username?: string } | null
+  const workspace = { id: current.organizations.id, name: current.organizations.name, inviteToken: current.organizations.invite_token }
+  return { user: { ...user, name: profile?.display_name || user.name, username: profile?.username || user.username }, projects, notices, members, workspace }
 }
 
-export async function saveCloudProject(project: Project, ownerId: string) {
+export async function saveCloudProject(project: Project, ownerId: string, organizationId?: string) {
   if (!supabase) return
   const { error } = await supabase.from('projects').upsert({
-    id: project.id, owner_id: ownerId, title: project.title, client: project.client, description: project.description,
+    id: project.id, owner_id: project.ownerId || ownerId, ...(organizationId ? { organization_id: organizationId } : {}), title: project.title, client: project.client, description: project.description,
     status: project.status, due_date: project.dueDate || null, retention_days: project.retentionDays,
     review_token: project.reviewToken || null, allow_download: project.allowDownload, updated_at: project.updatedAt,
   })
+  if (error) throw error
+  if (project.assignments) {
+    const existingResult = await supabase.from('review_assignments').select('reviewer_id').eq('project_id', project.id)
+    if (existingResult.error) throw existingResult.error
+    const existingReviewers = new Set((existingResult.data || []).map(row => row.reviewer_id as string))
+    const remove = await supabase.from('review_assignments').delete().eq('project_id', project.id)
+    if (remove.error) throw remove.error
+    if (project.assignments.length) {
+      const add = await supabase.from('review_assignments').insert(project.assignments.map(a => ({ id: a.id, project_id: project.id, reviewer_id: a.reviewerId, reviewer_name: a.reviewerName, username: a.username, token: a.token, status: a.status })))
+      if (add.error) throw add.error
+      const newlyAssigned = project.assignments.filter(a => !existingReviewers.has(a.reviewerId))
+      if (newlyAssigned.length) {
+        const notifications = await supabase.rpc('notify_reviewers', { p_project_id: project.id, p_reviewer_ids: newlyAssigned.map(a => a.reviewerId), p_title: 'Review assigned to you', p_detail: project.title })
+        if (notifications.error) throw notifications.error
+      }
+    }
+  }
+}
+
+export async function joinCloudOrganization(inviteToken: string) {
+  if (!supabase) throw new Error('Workspace invites are available after connecting Supabase.')
+  const { error } = await supabase.rpc('join_organization', { p_invite_token: inviteToken })
+  if (error) throw error
+}
+
+export async function notifyCloudReviewers(projectId: string, reviewerIds: string[], title: string, detail: string) {
+  if (!supabase || reviewerIds.length === 0) return
+  const { error } = await supabase.rpc('notify_reviewers', { p_project_id: projectId, p_reviewer_ids: reviewerIds, p_title: title, p_detail: detail })
   if (error) throw error
 }
 
@@ -80,7 +124,7 @@ export async function markCloudNoticeRead(id: string) {
   if (error) throw error
 }
 
-export type PublicReview = { id: string; title: string; client: string; description: string; status: ProjectStatus; allow_download: boolean; updated_at: string; files: Array<{ id: string; name: string; content_type: string; byte_size: number; version: number; uploaded_at: string }>; comments: Array<{ id: string; author_name: string; body: string; kind: ReviewComment['kind']; created_at: string }> }
+export type PublicReview = { id: string; title: string; client: string; description: string; status: ProjectStatus; allow_download: boolean; updated_at: string; reviewer_name?: string; assignment_status?: 'Pending' | 'Changes requested' | 'Approved'; review_is_assigned?: boolean; has_assignments?: boolean; files: Array<{ id: string; name: string; content_type: string; byte_size: number; version: number; uploaded_at: string }>; comments: Array<{ id: string; author_name: string; body: string; kind: ReviewComment['kind']; created_at: string }> }
 export async function loadPublicReview(token: string): Promise<Project | null> {
   if (!supabase) return null
   const { data, error } = await supabase.rpc('get_public_review', { p_token: token })
@@ -88,7 +132,7 @@ export async function loadPublicReview(token: string): Promise<Project | null> {
   if (!data) return null
   const raw = data as PublicReview
   const files = raw.files.map(f => ({ id: f.id, name: f.name, type: f.content_type, size: Number(f.byte_size), uploadedAt: f.uploaded_at, version: f.version, url: workerUrl ? `${workerUrl}/api/files/${f.id}?token=${encodeURIComponent(token)}&inline=1` : undefined }))
-  return { id: raw.id, title: raw.title, client: raw.client, description: raw.description, status: raw.status, updatedAt: raw.updated_at, retentionDays: 14, allowDownload: raw.allow_download, reviewToken: token, files, comments: raw.comments.map(c => ({ id: c.id, author: c.author_name, body: c.body, kind: c.kind, createdAt: c.created_at })) }
+  return { id: raw.id, title: raw.title, client: raw.client, description: raw.description, status: raw.status, updatedAt: raw.updated_at, retentionDays: 14, allowDownload: raw.allow_download, reviewToken: token, reviewerName: raw.reviewer_name, reviewAssignmentStatus: raw.assignment_status, reviewIsAssigned: raw.review_is_assigned, hasReviewAssignments: raw.has_assignments, files, comments: raw.comments.map(c => ({ id: c.id, author: c.author_name, body: c.body, kind: c.kind, createdAt: c.created_at })) }
 }
 
 export async function submitCloudReview(token: string, name: string, body: string, action: ReviewComment['kind']) {
