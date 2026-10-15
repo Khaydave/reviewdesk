@@ -9,16 +9,16 @@ npm install
 npm run dev
 ```
 
-Without environment variables, ReviewDesk runs in **local demo mode** with a sample Khaydave Media workspace and teammate directory. Sign up with any email and a password of at least six characters, then create a project and assign reviewers by name or `@username`. Demo projects and activity are saved in this browser. Uploaded files are previewable in the current browser session; this mode is not shared across devices and should not be used for real client files.
+Without environment variables, ReviewDesk runs in **local demo mode** with sample individual and organisation account views. Choose an account type on the login or sign-up screen. Demo projects and activity are saved in this browser. Invite links are for trying the flow locally and do not connect different devices. Uploaded files are previewable in the current browser session; this mode should not be used for real client files.
 
 ## Supabase setup
 
-1. Create a Supabase project and run [`supabase/migrations/0001_reviewdesk.sql`](supabase/migrations/0001_reviewdesk.sql), then [`supabase/migrations/0002_team_reviews.sql`](supabase/migrations/0002_team_reviews.sql), in its SQL editor.
+1. Create a Supabase project and run migrations `0001_reviewdesk.sql`, `0002_team_reviews.sql`, and `0003_organization_accounts.sql` in order in its SQL editor.
 2. Add the project URL and public anon key to `.env` using [`.env.example`](.env.example).
 3. Enable email and password authentication in Supabase Auth. Email delivery is only used for Supabase account verification or password recovery; ReviewDesk itself sends no email, WhatsApp, or SMS notifications.
 4. Set your deployed site URL and local development URL in Supabase Auth's allowed redirect URLs.
 
-The migrations create RLS-protected user, organisation, membership, project, file, assignment, comment, and notification tables. Each account starts with a workspace and can join another through a shared workspace invite link. Project owners can assign reviewers from their workspace directory. Each assigned reviewer receives a unique token link that identifies their response and works without login; their dashboard count updates when they next sign in. Guest review access is limited to token-checked RPC functions.
+The migrations create RLS-protected individual and organisation accounts, departments, invitation links, projects, files, assignments, comments, and notifications. Individual accounts create and review projects. An organisation login manages departments and creates shareable invitation links, then sees read-only organisation and department overviews. Invitees join as individual accounts; ReviewDesk does not send invitation emails or other messages. Project owners can assign reviewers from their organisation directory. Each assigned reviewer receives a unique token link that identifies their response and works without login. Organisation accounts cannot create projects or submit review responses.
 
 ## Cloudflare R2 and Worker
 
