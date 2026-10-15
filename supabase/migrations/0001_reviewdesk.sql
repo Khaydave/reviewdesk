@@ -84,7 +84,7 @@ as $$
   select jsonb_build_object(
     'id', p.id, 'title', p.title, 'client', p.client, 'description', p.description,
     'status', p.status, 'allow_download', p.allow_download, 'updated_at', p.updated_at,
-    'files', coalesce((select jsonb_agg(jsonb_build_object('id', f.id, 'name', f.name, 'content_type', f.content_type, 'byte_size', f.byte_size, 'version', f.version, 'uploaded_at', f.uploaded_at) order by f.uploaded_at desc) from public.project_files f where f.project_id = p.id and f.expires_at > now()), '[]'::jsonb),
+    'files', coalesce((select jsonb_agg(jsonb_build_object('id', f.id, 'name', f.name, 'content_type', f.content_type, 'byte_size', f.byte_size, 'version', f.version, 'uploaded_at', f.uploaded_at) order by f.uploaded_at desc) from (select distinct on (pf.name) pf.id, pf.name, pf.content_type, pf.byte_size, pf.version, pf.uploaded_at from public.project_files pf where pf.project_id = p.id and pf.expires_at > now() order by pf.name, pf.version desc, pf.uploaded_at desc) f), '[]'::jsonb),
     'comments', coalesce((select jsonb_agg(jsonb_build_object('id', c.id, 'author_name', c.author_name, 'body', c.body, 'kind', c.kind, 'created_at', c.created_at) order by c.created_at) from public.review_comments c where c.project_id = p.id), '[]'::jsonb)
   )
   from public.projects p
