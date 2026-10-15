@@ -1,0 +1,13 @@
+name = "reviewdesk-file-service"
+main = "src/index.ts"
+compatibility_date = "2026-10-15"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "reviewdesk-files"
+
+[triggers]
+crons = ["0 * * * *"]
+
+[vars]
+CORS_ORIGIN = "http://localhost:5173"
