@@ -30,6 +30,102 @@
 .review-file-wrap{display:flex;align-items:center;gap:9px}.review-file-wrap .review-file-card{flex:1;min-width:0}.review-download{display:inline-flex;align-items:center;gap:5px;padding:8px 9px;border:1px solid #e5eaf1;border-radius:6px;background:#fff;color:#5978ae;font-size:8px;font-weight:700;white-space:nowrap}.review-download:hover{border-color:#cbd9ec;background:#f8fbff;color:#2563eb}
 @media(max-width:620px){.review-file-wrap{align-items:stretch;flex-wrap:wrap}.review-file-wrap .review-file-card{flex:1 1 100%}.review-download{margin-left:auto;padding:7px 8px}}
 
+/* Desktop legibility pass: give workspace text and controls more breathing room. */
+@media(min-width:801px){
+  .app-frame .workspace-switch b,.app-frame .profile-row b{font-size:13px}
+  .app-frame .workspace-switch small,.app-frame .profile-row small{font-size:11px}
+  .app-frame .nav-label,.app-frame .storage-heading{font-size:11px}
+  .app-frame .nav-item{font-size:13px}
+  .app-frame .nav-count,.app-frame .nav-unread{font-size:11px}
+  .app-frame .storage-card p,.app-frame .storage-card a{font-size:11px}
+  .app-frame .header-heading h1{font-size:22px}
+  .app-frame .header-heading p{font-size:12px}
+  .app-frame .search-box input{font-size:13px}
+  .app-frame .search-box kbd{font-size:10px}
+  .app-frame .welcome-date{font-size:11px}
+  .app-frame .welcome-row h2{font-size:28px}
+  .app-frame .welcome-row p{font-size:13px}
+  .app-frame .stat-label{font-size:12px}
+  .app-frame .stat-value{font-size:28px}
+  .app-frame .stat-detail{font-size:11px}
+  .app-frame .panel-head h3,.app-frame .project-info-panel h3{font-size:15px}
+  .app-frame .panel-head p{font-size:11px}
+  .app-frame .subtle-link,.app-frame .open-review-link{font-size:11px}
+  .app-frame .project-row-main b,.app-frame .table-project b{font-size:12px}
+  .app-frame .project-row-main small,.app-frame .table-project small{font-size:11px}
+  .app-frame .status-pill{font-size:10px}
+  .app-frame .comment-count,.app-frame .panel-foot-link{font-size:11px}
+  .app-frame .activity-item b,.app-frame .activity-item small{font-size:11px}
+  .app-frame .activity-item time{font-size:10px}
+  .app-frame .activity-empty,.app-frame .empty-state>p,.app-frame .demo-callout p{font-size:11px}
+  .app-frame .demo-callout b,.app-frame .empty-state>b{font-size:12px}
+  .app-frame .filter-tabs button{font-size:11px}
+  .app-frame .filter-tabs button span{font-size:10px}
+  .app-frame .table-head{font-size:10px}
+  .app-frame .table-date,.app-frame .file-count{font-size:11px}
+  .app-frame .back-link{font-size:12px}
+  .app-frame .editor-title h2{font-size:17px}
+  .app-frame .editor-title p,.app-frame .field-heading span{font-size:11px}
+  .app-frame .field-heading b,.app-frame .dropzone>b{font-size:12px}
+  .app-frame .dropzone>small,.app-frame .selected-files small{font-size:11px}
+  .app-frame .dropzone .size-note{font-size:10px}
+  .app-frame .selected-files b{font-size:11px}
+  .app-frame .form-stack label,.app-frame .settings-line>div b{font-size:12px}
+  .app-frame .form-stack input,.app-frame .form-stack textarea,.app-frame .form-stack select,.app-frame .settings-line select{font-size:13px}
+  .app-frame .settings-line>div small,.app-frame .aside-note p{font-size:11px}
+  .app-frame .settings-line>div b,.app-frame .aside-note>b{font-size:12px}
+  .app-frame .crumb,.app-frame .workspace-meta{font-size:11px}
+  .app-frame .workspace-title-row h2{font-size:26px}
+  .app-frame .inline-count,.app-frame .version-chip{font-size:10px}
+  .app-frame .file-info b,.app-frame .comment-author b{font-size:11px}
+  .app-frame .file-info small,.app-frame .comment-author time{font-size:10px}
+  .app-frame .empty-files>b,.app-frame .comment-row p{font-size:12px}
+  .app-frame .empty-files p,.app-frame .feedback-empty,.app-frame .link-empty p{font-size:11px}
+  .app-frame .decision-label,.app-frame .link-state{font-size:10px}
+  .app-frame .share-url>span,.app-frame .info-line,.app-frame .info-line b,.app-frame .settings-inline{font-size:11px}
+  .app-frame .retention-warning p{font-size:11px}
+  .app-frame .modal-heading h3{font-size:16px}
+  .app-frame .preview-caption{font-size:11px}
+  .app-frame .notification-toolbar{font-size:11px}
+  .app-frame .notification-row b{font-size:12px}
+  .app-frame .notification-row small{font-size:11px}
+  .app-frame .notification-row time{font-size:10px}
+  .app-frame .settings-section-title h3{font-size:15px}
+  .app-frame .settings-section-title p,.app-frame .settings-control small,.app-frame .service-row small{font-size:11px}
+  .app-frame .settings-control b,.app-frame .service-row b{font-size:12px}
+  .app-frame .retention-info{font-size:11px}
+  .app-frame .service-status,.app-frame .env-tip code{font-size:10px}
+  .app-frame .env-tip>b,.app-frame .env-tip p{font-size:11px}
+  .app-frame .assigned-main b,.app-frame .member-pick b,.app-frame .team-member-row b,.app-frame .reviewer-assignment b,.app-frame .team-invite b{font-size:12px}
+  .app-frame .assigned-main small,.app-frame .member-pick small,.app-frame .team-member-row small,.app-frame .reviewer-assignment small,.app-frame .team-invite small{font-size:11px}
+  .app-frame .member-role,.app-frame .demo-team-note{font-size:10px}
+  .app-frame .member-empty{font-size:11px}
+  .app-frame .member-search{font-size:11px}
+  .app-frame .member-search input{font-size:12px}
+  .app-frame svg,.review-page svg{transform:scale(1.14);transform-origin:center}
+  .app-frame .welcome-row>.button,.app-frame .page-toolbar>.button,.app-frame .workspace-title-row>.button,.app-frame .editor-actions .button{font-size:13px}
+}
+
+/* Keep small-screen controls readable while preserving the compact layouts. */
+@media(max-width:800px){
+  .app-frame .nav-item{font-size:13px}
+  .app-frame small,.review-page small{font-size:10px}
+  .app-frame .status-pill{font-size:9px}
+  .app-frame .assigned-main b,.app-frame .member-pick b,.app-frame .team-member-row b,.app-frame .reviewer-assignment b{font-size:11px}
+  .app-frame .assigned-main small,.app-frame .member-pick small,.app-frame .team-member-row small,.app-frame .reviewer-assignment small{font-size:10px}
+  .app-frame p,.review-page p{font-size:11px}
+  .app-frame label,.review-page .review-name{font-size:11px}
+  .app-frame input,.app-frame textarea,.app-frame select,.review-page input,.review-page textarea{font-size:12px}
+  .app-frame svg,.review-page svg,.auth-page svg{transform:scale(1.1);transform-origin:center}
+}
+@media(min-width:801px){
+  .auth-page .form-stack label{font-size:13px}
+  .auth-page .form-stack input{font-size:14px}
+  .auth-page .auth-card>p{font-size:14px}
+  .auth-page .auth-switch{font-size:12px}
+  .auth-page .auth-note{font-size:11px}
+}
+
 /* Team review assignments */
 .assigned-panel{margin:0 0 16px}.assigned-list{padding:0 10px 8px}.assigned-row{display:flex;align-items:center;gap:11px;min-height:62px;padding:9px 8px;border-top:1px solid #eff2f6;color:inherit}.assigned-row:hover{background:#f9fbfe}.assigned-glyph{display:grid;place-items:center;flex:0 0 auto;width:34px;height:34px;border-radius:8px;background:#edf4ff;color:#3771d5}.assigned-main{flex:1;min-width:0}.assigned-main b,.assigned-main small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.assigned-main b{color:#33445d;font-size:10px}.assigned-main small{margin-top:4px;color:#8995a6;font-size:9px}.reviewer-picker{padding:13px;border:1px solid #e8edf3;border-radius:8px;background:#fbfcfe}.reviewer-picker .field-heading{margin-bottom:10px}.member-pick-list,.team-member-list,.reviewer-assignment-list{display:flex;flex-direction:column}.member-pick,.team-member-row,.reviewer-assignment{display:flex;align-items:center;gap:10px;min-height:47px;padding:7px 3px;border-top:1px solid #edf0f4}.member-pick{cursor:pointer}.member-pick input{accent-color:#2563eb}.member-pick>span:nth-of-type(2),.team-member-row>span:nth-of-type(2),.reviewer-assignment>span:nth-of-type(2){flex:1;min-width:0}.member-pick b,.member-pick small,.team-member-row b,.team-member-row small,.reviewer-assignment b,.reviewer-assignment small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.member-pick b,.team-member-row b,.reviewer-assignment b{color:#34465f;font-size:10px}.member-pick small,.team-member-row small,.reviewer-assignment small{margin-top:3px;color:#8995a6;font-size:9px}.member-avatar{display:grid;place-items:center;flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:#e9effb;color:#3d67ae;font-size:8px;font-weight:800}.member-role{color:#8c98a8;font-size:9px;text-transform:capitalize}.member-empty{padding:12px;border-radius:6px;background:#f4f7fb;color:#78869a;font-size:10px;line-height:1.6}.assigned-reviewers .panel-head{padding-bottom:8px}.reviewer-assignment-list{padding:0 14px 12px}.reviewer-assignment .icon-button{width:30px;height:30px}.team-section{scroll-margin-top:96px}.team-invite{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;border:1px solid #e8edf3;border-radius:8px;background:#fbfcfe}.team-invite b,.team-invite small{display:block}.team-invite b{color:#34465f;font-size:10px}.team-invite small{margin-top:4px;color:#8995a6;font-size:9px;line-height:1.5}.team-member-list{margin-top:11px}.team-member-row{padding:7px 3px}.demo-team-note{display:block;margin-top:12px;padding:10px 12px;border-radius:7px;background:#f2f6fc;color:#74849a;font-size:9px;line-height:1.55}.join-page{display:grid;place-items:center;min-height:100vh;padding:20px;background:#f6f8fb}.join-card{width:min(100%,420px);padding:28px}.join-card h1{margin:16px 0 8px;color:#1b304d;font-family:Manrope,sans-serif;font-size:21px;letter-spacing:-.6px}.join-card>p{margin:0 0 20px;color:#78869a;font-size:11px;line-height:1.6}.join-actions{display:flex;gap:9px}.join-actions .button{flex:1;justify-content:center}
 .member-search{display:block;margin:0 0 7px;color:#718198;font-size:9px;font-weight:600}.member-search input{height:34px;margin-top:5px;padding:0 10px;font-size:10px}
