@@ -220,3 +220,65 @@ html{font-size:var(--rd-root-font-size,16px)}
 .member-pick-action.selected{border-color:#c8daf7;background:#edf4ff;color:#2d64bb}
 .member-pick-action.selected:hover{border-color:#ebcaca;background:#fff7f7;color:#a84747}
 @media(max-width:620px){.overview-tabs{overflow-x:auto}.overview-tabs button{flex:0 0 auto;padding-inline:10px}.member-pick{gap:7px;padding:8px 2px}.member-pick-action{min-width:78px;min-height:36px;padding:0 8px}}
+
+/* Appearance setting */
+.theme-choice{display:inline-flex;gap:5px;margin-top:15px;padding:4px;border:1px solid #e2e8f0;border-radius:10px;background:#f5f7fa}
+.theme-choice button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:116px;min-height:40px;padding:0 13px;border:1px solid transparent;border-radius:7px;background:transparent;color:#627087;font-size:.9375rem;font-weight:700;cursor:pointer}
+.theme-choice button:hover{background:#fff;color:#334a69}
+.theme-choice button.selected{border-color:#dce6f4;background:#fff;color:#245fc2;box-shadow:0 1px 3px #15243b12}
+
+html[data-theme="dark"]{color-scheme:dark;--navy:#e5edf8;--muted:#9baac0;--line:#2b3b51;--page:#101a29;background:#101a29;color:#dce6f2}
+html[data-theme="dark"] body{background:#101a29;color:#dce6f2}
+html[data-theme="dark"] .app-frame,html[data-theme="dark"] .review-page,html[data-theme="dark"] .join-page{background:#101a29;color:#dce6f2}
+html[data-theme="dark"] :is(.sidebar,.app-header,.review-header){background:#162337;border-color:#2a3b52}
+html[data-theme="dark"] :is(.sidebar,.app-frame,.review-page,.join-page) :is(h1,h2,h3,h4,b,strong){color:#e4ecf7}
+html[data-theme="dark"] :is(.header-heading h1,.workspace-title-row h2,.review-heading h1,.review-locked h1){color:#eef4fc}
+html[data-theme="dark"] :is(.content-area,.org-content,.review-content){color:#dce6f2}
+html[data-theme="dark"] :is(.panel,.stat-card,.project-row,.table-row,.file-card,.notification-row,.settings-section,.review-comments,.review-file-card,.review-response,.modal,.join-card,.auth-card,.org-stat-card,.department-card,.member-card,.invite-card){background:#18263a;border-color:#2b3b51;color:#dce6f2}
+html[data-theme="dark"] :is(.panel-head,.table-head){background:#1d2d43;border-color:#2b3b51;color:#bdcadd}
+html[data-theme="dark"] :is(.panel-head h2,.panel-head h3,.table-head,.project-row-main b,.table-project b,.settings-section-title h3,.settings-control b,.service-row b,.notification-row b,.review-section-head h2,.review-comments h2,.review-response-heading h2,.review-file-card b,.modal-heading h3,.project-info-panel h3){color:#e2eaf5}
+html[data-theme="dark"] :is(.sidebar,.app-frame,.review-page,.join-page) :is(p,small,time,.muted,.header-heading p,.workspace-switch small,.profile-row small,.storage-card p,.settings-section-title p,.settings-control small,.service-row small,.env-tip p,.env-tip code,.display-size-note,.display-size-intro p,.review-heading>p,.review-section-head p,.review-file-card small,.review-response-heading p,.review-name,.download-permission,.no-comments,.review-footer,.notification-row small){color:#a0aec2}
+html[data-theme="dark"] :is(.nav-item,.nav-item svg,.icon-button,.button-outline,.button-quiet){color:#bdcadd}
+html[data-theme="dark"] .nav-item:hover,html[data-theme="dark"] .icon-button:hover,html[data-theme="dark"] .button-quiet:hover{background:#23354d;color:#eef4fc}
+html[data-theme="dark"] .nav-item.active{background:#203d66;color:#80aeff}
+html[data-theme="dark"] .nav-item.active svg{color:#80aeff}
+html[data-theme="dark"] .button-outline{background:#1c2b40;border-color:#394b63}
+html[data-theme="dark"] .button-outline:hover{background:#24364e;border-color:#526b8b}
+html[data-theme="dark"] :is(input,textarea,select,.search-box,.share-url){background:#101b2b;border-color:#3a4b63;color:#e5edf8}
+html[data-theme="dark"] :is(input,textarea,select)::placeholder{color:#8292aa}
+html[data-theme="dark"] :is(.search-box input){background:transparent}
+html[data-theme="dark"] :is(.display-size-trigger,.display-size-popover,.download-icon,.review-response .button-outline,.share-url button){background:#1c2b40;border-color:#3a4b63;color:#c4d0e0}
+html[data-theme="dark"] :is(.workspace-switch,.storage-card,.settings-section-title,.service-row,.team-member-row,.project-row,.table-row,.comment-row,.review-footer,.review-comments h2){border-color:#2b3b51}
+html[data-theme="dark"] :is(.workspace-switch,.storage-card,.retention-info,.env-tip,.link-empty,.file-preview,.file-preview-placeholder,.empty-files,.notification-row:hover,.notification-row.unread,.share-url,.review-file-thumb,.review-comments h2 span){background:#1d2d43;color:#b8c7da}
+html[data-theme="dark"] .env-tip{border-color:#344963}
+html[data-theme="dark"] :is(.file-info b,.comment-author b,.comment-row p,.info-line b,.review-heading h1,.review-locked h1){color:#dce6f2}
+html[data-theme="dark"] :is(.file-info small,.comment-author time,.info-line span,.feedback-empty,.empty-files p,.share-url>span,.link-empty p){color:#9dacc0}
+html[data-theme="dark"] .theme-choice{background:#101b2b;border-color:#34465e}
+html[data-theme="dark"] .theme-choice button{color:#aebbd0}
+html[data-theme="dark"] .theme-choice button:hover,html[data-theme="dark"] .theme-choice button.selected{background:#263953;border-color:#3a5271;color:#a8c8ff}
+html[data-theme="dark"] :is(.status-pill.pending,.link-state.live){background:#493a20;color:#ffd681}
+html[data-theme="dark"] :is(.status-pill.approved,.decision-label.approval,.service-mark.connected){background:#173b32;color:#8be0b5}
+html[data-theme="dark"] :is(.status-pill.changes,.decision-label.changes){background:#493124;color:#ffc18a}
+html[data-theme="dark"] .status-pill.draft{background:#2d394a;color:#bdcadd}
+html[data-theme="dark"] .landing{background:#101a29;color:#dce6f2}
+html[data-theme="dark"] :is(.landing-nav,.workflow,.landing-footer){border-color:#2b3b51;background:#101a29}
+html[data-theme="dark"] :is(.landing-nav nav,.hero-copy>p,.hero-proof strong,.hero-proof small,.workflow .section-title p,.step p,.landing-footer){color:#a9b7ca}
+html[data-theme="dark"] :is(.hero h1,.section-title h2,.feature-inner h2){color:#eef4fc}
+html[data-theme="dark"] .hero-tag{background:#1d3454;color:#a9caff}
+html[data-theme="dark"] .art-orbit{border-color:#293d57}
+html[data-theme="dark"] .art-paper{background:#1a2a40;border-color:#34465d}
+html[data-theme="dark"] :is(.paper-bar,.paper-bar b,.paper-caption,.paper-details small,.workflow .step h3,.feature-inner li){color:#c0cde0}
+html[data-theme="dark"] :is(.feature-band,.feature-inner){background:#162438;color:#dce6f2}
+html[data-theme="dark"] .auth-main{background:#101a29}
+html[data-theme="dark"] .review-header-label{color:#b1bfd1}
+html[data-theme="dark"] .review-locked p{color:#a3b1c5}
+html[data-theme="dark"] .review-response-heading>span,.settings-section-title>span,.display-size-icon{background:#20395b;color:#9fc2ff}
+html[data-theme="dark"] :is(.overview-tabs button.selected,.member-pick.selected,.member-pick-action.selected){background:#20395b;color:#a9caff}
+html[data-theme="dark"] .member-pick-action{background:#1d2d43;border-color:#394d67;color:#c4d0e0}
+html[data-theme="dark"] .member-pick-action:hover{background:#263a55;color:#a9caff}
+html[data-theme="dark"] .modal-backdrop{background:#050b14b8}
+html[data-theme="dark"] .preview-caption{border-color:#2b3b51;color:#a3b1c5}
+html[data-theme="dark"] .review-file-card:hover{background:#1d2d43;border-color:#415a78}
+html[data-theme="dark"] .review-footer .brand{color:#a9b7ca}
+html[data-theme="dark"] .notification-row{border-color:#2b3b51}
+html[data-theme="dark"] .team-member-row .member-role{color:#b5c2d4}
