@@ -282,3 +282,39 @@ html[data-theme="dark"] .review-file-card:hover{background:#1d2d43;border-color:
 html[data-theme="dark"] .review-footer .brand{color:#a9b7ca}
 html[data-theme="dark"] .notification-row{border-color:#2b3b51}
 html[data-theme="dark"] .team-member-row .member-role{color:#b5c2d4}
+
+/* Dark mode contrast pass: landing, authentication, and secondary labels */
+html[data-theme="dark"] .brand:not(.brand-inverse){color:#edf3fb}
+html[data-theme="dark"] .auth-page,html[data-theme="dark"] .auth-main{background:#101a29;color:#dce6f2}
+html[data-theme="dark"] .auth-main .auth-card{width:min(100%,430px);padding:clamp(22px,3vw,32px);border:1px solid #2b3b51;border-radius:14px;background:#18263a;box-shadow:0 18px 50px #050b1438}
+html[data-theme="dark"] .auth-card h2{color:#f1f5fb}
+html[data-theme="dark"] .auth-card>p{color:#b2bfd1}
+html[data-theme="dark"] .auth-card .form-stack label{color:#d7e1ee}
+html[data-theme="dark"] .auth-switch{color:#b2bfd1}
+html[data-theme="dark"] .auth-switch a{color:#82adff}
+html[data-theme="dark"] .auth-note{border-color:#34465e;color:#afbdd0}
+html[data-theme="dark"] .auth-note svg{color:#9cb9ec}
+html[data-theme="dark"] .mobile-legal{color:#aebbd0}
+html[data-theme="dark"] .auth-icon{background:#20395b;color:#a9caff}
+html[data-theme="dark"] .account-type-switch{border-color:#34465e;background:#101b2b}
+html[data-theme="dark"] .account-type-switch button{color:#b1bfd2}
+html[data-theme="dark"] .account-type-switch button:hover{background:#1d2d43;color:#edf3fb}
+html[data-theme="dark"] .account-type-switch button.selected{background:#2a4261;color:#d9e8ff;box-shadow:0 1px 4px #050b1438}
+html[data-theme="dark"] .account-choice-locked{background:#203047;color:#c3d0e1}
+html[data-theme="dark"] .form-error{border-color:#744147;background:#3b242a;color:#ffb6b6}
+html[data-theme="dark"] .success-note{border-color:#286348;background:#18382e;color:#9be3bd}
+html[data-theme="dark"] .app-frame :is(.stat-label,.stat-detail,.member-role,.nav-count,.project-row-main small,.table-date,.file-count,.activity-empty,.empty-state>p,.profile-row small,.workspace-switch small,.org-account-card small,.org-readonly-note small,.org-dept-copy small,.org-dept-count small,.org-invite-row small,.org-no-email-note,.demo-callout p,.display-size-note,.display-size-intro p){color:#b1bfd2}
+html[data-theme="dark"] .app-frame :is(.subtle-link,.text-link,.storage-card a,.settings-inline){color:#82adff}
+html[data-theme="dark"] .app-frame :is(.demo-callout,.empty-state,.member-empty,.reviewer-picker,.team-invite,.org-no-email-note){border-color:#34465e;background:#1d2d43;color:#bbc9da}
+html[data-theme="dark"] .app-frame .demo-callout b,html[data-theme="dark"] .app-frame .empty-state>b{color:#e3ebf6}
+html[data-theme="dark"] .org-frame .org-readonly-note{border-color:#344e70;background:#1b2d46;color:#b8ccec}
+html[data-theme="dark"] .org-frame .org-readonly-note b{color:#d4e4ff}
+html[data-theme="dark"] .org-frame .org-department-card{background:#18263a;border-color:#2b3b51;color:#bdcadd}
+html[data-theme="dark"] .org-frame .org-dept-copy b,html[data-theme="dark"] .org-frame .org-invite-list h4,html[data-theme="dark"] .org-frame .org-member-group h4{color:#e1eaf5}
+html[data-theme="dark"] .org-frame .org-dept-count{color:#a8c8ff}
+html[data-theme="dark"] .org-frame .org-no-email-note{background:#1d2d43;color:#bdcadd}
+html[data-theme="dark"] .review-footer>span:last-child{color:#aebbd0}
+html[data-theme="dark"] .review-locked>span{background:#20395b;color:#a9caff}
+html[data-theme="dark"] .review-heading .eyebrow{color:#9bbcf2}
+html[data-theme="dark"] .review-download{color:#8fb6ff}
+@media(max-width:620px){html[data-theme="dark"] .auth-main .auth-card{width:min(100%,430px);padding:22px 19px}}
