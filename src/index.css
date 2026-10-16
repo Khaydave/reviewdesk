@@ -318,3 +318,17 @@ html[data-theme="dark"] .review-locked>span{background:#20395b;color:#a9caff}
 html[data-theme="dark"] .review-heading .eyebrow{color:#9bbcf2}
 html[data-theme="dark"] .review-download{color:#8fb6ff}
 @media(max-width:620px){html[data-theme="dark"] .auth-main .auth-card{width:min(100%,430px);padding:22px 19px}}
+
+/* Numeric values and review counters need the same contrast as body text. */
+html[data-theme="dark"] .app-frame .stat-value{color:#f2f6fc}
+html[data-theme="dark"] .app-frame .comment-count{color:#c4d0e0}
+html[data-theme="dark"] .app-frame .inline-count{background:#26384f;color:#d6e1ef}
+html[data-theme="dark"] .app-frame .version-chip{border-color:#40546e;background:#26384f;color:#dce7f4}
+html[data-theme="dark"] .app-frame .nav-unread{background:#263d60;color:#b5d0ff}
+html[data-theme="dark"] .app-frame .filter-tabs{border-color:#34465e;background:#18263a}
+html[data-theme="dark"] .app-frame .filter-tabs button{color:#b4c1d3}
+html[data-theme="dark"] .app-frame .filter-tabs button.selected{background:#263d60;color:#c5d9fb}
+html[data-theme="dark"] .app-frame .filter-tabs button span{color:#c3cfdf}
+html[data-theme="dark"] .app-frame .overview-tabs button>span{background:#26384f;color:#d6e1ef}
+html[data-theme="dark"] .app-frame .overview-tabs button.selected>span{background:#314d74;color:#e3edfc}
+html[data-theme="dark"] .org-frame .org-count-badge{background:#263d60;color:#b5d0ff}
