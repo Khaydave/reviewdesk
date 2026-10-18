@@ -15,15 +15,15 @@ const mapProject = (p: CloudProject): Project => ({ id: p.id, ownerId: p.owner_i
 export async function loadCloudState(user: User): Promise<AppState> {
   if (!supabase) throw new Error('Supabase is not configured.')
   const [profileResult, ownResult, assignmentResult, noticesResult, colleaguesResult] = await Promise.all([
-    supabase.from('profiles').select('display_name, username').eq('id', user.id).maybeSingle(),
+    supabase.from('profiles').select('display_name, username, organization, department, position').eq('id', user.id).maybeSingle(),
     supabase.from('projects').select('id').eq('owner_id', user.id),
     supabase.from('review_assignments').select('project_id').eq('reviewer_id', user.id),
     supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(100),
     supabase.from('colleague_connections').select('colleague_id, profiles!colleague_connections_colleague_id_fkey(display_name, username)').eq('owner_id', user.id).order('created_at', { ascending: false }),
   ])
   for (const result of [profileResult, ownResult, assignmentResult, noticesResult, colleaguesResult]) if (result.error) throw result.error
-  const profile = profileResult.data as { display_name?: string; username?: string } | null
-  const currentUser: User = { ...user, name: profile?.display_name || user.name, username: profile?.username || user.username }
+  const profile = profileResult.data as { display_name?: string; username?: string; organization?: string; department?: string; position?: string } | null
+  const currentUser: User = { ...user, name: profile?.display_name || user.name, username: profile?.username || user.username, organization: profile?.organization || '', department: profile?.department || '', position: profile?.position || '' }
   const projectIds = [...new Set([...(ownResult.data || []).map(row => row.id as string), ...(assignmentResult.data || []).map(row => row.project_id as string)])]
   let projects: Project[] = []
   if (projectIds.length) {
@@ -37,6 +37,17 @@ export async function loadCloudState(user: User): Promise<AppState> {
     return item.profiles ? [{ userId: item.colleague_id, name: item.profiles.display_name || item.profiles.username, username: item.profiles.username }] : []
   })
   return { user: currentUser, projects, notices, colleagues }
+}
+
+export async function saveCloudProfile(user: User) {
+  if (!supabase) return
+  const { error } = await supabase.from('profiles').upsert({
+    id: user.id, display_name: user.name, username: user.username,
+    organization: user.organization || '', department: user.department || '', position: user.position || '',
+  }, { onConflict: 'id' })
+  if (error) throw error
+  const { error: authError } = await supabase.auth.updateUser({ data: { full_name: user.name, username: user.username, organization: user.organization || '', department: user.department || '', position: user.position || '' } })
+  if (authError) throw authError
 }
 
 export async function searchCloudPeople(query: string): Promise<Colleague[]> {

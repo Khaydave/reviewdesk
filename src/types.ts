@@ -8,5 +8,5 @@ export type Project = {
   dueDate?: string; retentionDays: number; reviewToken?: string; allowDownload: boolean; files: ProjectFile[]; comments: ReviewComment[]; assignments?: ReviewAssignment[]; reviewerName?: string; reviewAssignmentStatus?: ReviewAssignment['status']; reviewIsAssigned?: boolean; hasReviewAssignments?: boolean
 }
 export type Notice = { id: string; title: string; detail: string; time: string; read: boolean; projectId?: string }
-export type User = { id: string; name: string; email: string; username: string }
+export type User = { id: string; name: string; email: string; username: string; organization?: string; department?: string; position?: string }
 export type AppState = { user: User | null; projects: Project[]; notices: Notice[]; colleagues: Colleague[] }
