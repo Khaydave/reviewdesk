@@ -512,3 +512,8 @@ html[data-theme="dark"] .app-frame .retention-warning b{color:#ffe6a6}
   .app-frame .file-grid{grid-template-columns:minmax(0,1fr)}
   .app-frame .file-preview{height:145px}
 }
+
+/* Individual-account colleague discovery */
+.colleague-page{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;max-width:980px;margin:0 auto}.colleague-search-panel,.colleague-saved-panel{padding:24px}.colleague-search-form{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:8px 0 12px}.colleague-search-form .member-search{display:grid;gap:8px;color:#43536b;font-size:.9rem;font-weight:700}.colleague-search-form .member-search input{width:100%;min-height:46px;padding:0 13px;border:1px solid #dce3ed;border-radius:8px;background:#fff;color:#25364f;font-size:1rem}.colleague-search-hint{display:flex;align-items:center;gap:8px;color:#64748b;font-size:.875rem}.colleague-search-hint svg{flex:none;color:#3471ce}.colleague-saved-panel .member-pick-list{margin-top:6px}.colleague-saved-panel .member-pick{min-height:62px}.colleague-saved-panel .org-revoke-invite{display:grid;place-items:center;width:36px;height:36px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#64748b;cursor:pointer}.colleague-saved-panel .org-revoke-invite:hover{border-color:#efc7c7;background:#fff6f6;color:#b54747}
+html[data-theme="dark"] .colleague-search-form .member-search{color:#c4d0e0}html[data-theme="dark"] .colleague-search-form .member-search input,html[data-theme="dark"] .colleague-saved-panel .org-revoke-invite{border-color:#394d67;background:#17263a;color:#e1e9f3}html[data-theme="dark"] .colleague-search-hint{color:#a8b7ca}
+@media(max-width:620px){.colleague-search-panel,.colleague-saved-panel{padding:17px}.colleague-saved-panel .member-pick{gap:8px}}

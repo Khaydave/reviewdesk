@@ -1,59 +1,38 @@
 # ReviewDesk
 
-A responsive creative review and approval workspace for designers and media teams. It includes account-based organisation workspaces, reviewer assignments and queue counts, login-free personal review links, project management, file previews, comments, approvals, in-app notifications, and file retention settings.
+A responsive creative review and approval app for individual designers, editors, and reviewers. Users have personal accounts with unique usernames, create their own projects, find reviewers by username or exact email, and save frequent collaborators as colleagues. Review assignments appear in the reviewer's account, while unique review links also work for people without accounts.
 
 ## Run locally
 
-```bash
-npm install
-npm run dev
-```
+1. Install Node.js 20 or newer.
+2. Run `npm install`.
+3. Run `npm run dev` and open the local URL Vite prints.
 
-Without environment variables, ReviewDesk runs in **local demo mode** with sample individual and organisation account views. Choose an account type on the login or sign-up screen. Demo projects and activity are saved in this browser. Invite links are for trying the flow locally and do not connect different devices. Uploaded files are previewable in the current browser session; this mode should not be used for real client files.
+Without environment variables, ReviewDesk runs in **local demo mode** with sample projects and sample accounts. Data stays in that browser and does not sync between devices. Connect Supabase and the Cloudflare upload Worker before using real accounts or client files.
 
-## Supabase setup
+## Connect Supabase
 
-1. Create a Supabase project and run migrations `0001_reviewdesk.sql`, `0002_team_reviews.sql`, and `0003_organization_accounts.sql` in order in its SQL editor.
-2. Add the project URL and public anon key to `.env` using [`.env.example`](.env.example).
-3. Enable email and password authentication in Supabase Auth. Email delivery is only used for Supabase account verification or password recovery; ReviewDesk itself sends no email, WhatsApp, or SMS notifications.
-4. Set your deployed site URL and local development URL in Supabase Auth's allowed redirect URLs.
+1. Create a Supabase project.
+2. In the Supabase SQL editor, run the migrations in order: `0001_reviewdesk.sql`, `0002_team_reviews.sql`, `0003_organization_accounts.sql`, then `0004_individual_colleagues.sql`.
+3. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to a local `.env` file or Cloudflare Pages environment variables.
+4.
 
-The migrations create RLS-protected individual and organisation accounts, departments, invitation links, projects, files, assignments, comments, and notifications. Individual accounts create and review projects. An organisation login manages departments and creates shareable invitation links, then sees read-only organisation and department overviews. Invitees join as individual accounts; ReviewDesk does not send invitation emails or other messages. Project owners can assign reviewers from their organisation directory. Each assigned reviewer receives a unique token link that identifies their response and works without login. Organisation accounts cannot create projects or submit review responses.
+The final migration converts existing organization profiles to individual accounts and makes usernames unique. It retains historical organization tables and records for data safety, but ReviewDesk no longer has organization login, department, or invitation screens. New projects belong to their individual creator. Reviewer search checks an exact username or email and returns only the person's display name and username; it never returns email addresses. Saved colleagues are private to the account that saved them.
 
-## Cloudflare R2 and Worker
+Supabase Auth email confirmation may send its standard verification email if enabled in project settings. ReviewDesk itself does not send email, WhatsApp, or SMS notifications; project updates and reminders are in-app only.
 
-The Worker source is in [`workers/src/index.ts`](workers/src/index.ts). It streams files into a private R2 bucket, checks the Supabase access token and project ownership for uploads, serves files only to the project owner or a reviewer with a valid project or assigned-review token, and runs hourly expiry/reminder jobs. The Worker has a 95 MB per-file limit in this initial implementation.
+## File uploads and deployment
 
-1. Create a private R2 bucket named `reviewdesk-files` (or change `bucket_name` in `workers/wrangler.toml`).
-2. In `workers/`, install and deploy with Wrangler:
+Configure the Cloudflare upload Worker in `workers/` with the Supabase service role and Cloudflare R2 credentials. Add `VITE_UPLOAD_WORKER_URL` to the app's environment. See `workers/README.md` for Worker setup. Keep service-role keys out of browser variables.
 
-   ```bash
-   npm install
-   npx wrangler login
-   npx wrangler secret put SUPABASE_URL
-   npx wrangler secret put SUPABASE_ANON_KEY
-   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
-   npx wrangler deploy
-   ```
+Build with `npm run build`; Cloudflare Pages can deploy the generated `dist` directory. Use the included `public/_redirects` file for SPA routes.
 
-3. Add the Worker URL as `VITE_UPLOAD_WORKER_URL` in the app's `.env` and Cloudflare Pages environment variables. Set `CORS_ORIGIN` to your local and deployed app origins.
-4. Keep the Supabase service role key only as a Worker secret. Never put it in a `VITE_` variable.
+## Stack
 
-## Cloudflare Pages
+- React, TypeScript, Tailwind CSS, and Vite
+- Supabase Auth and PostgreSQL with row-level security
+- Cloudflare Pages, Workers, and R2
 
-Connect the GitHub repository to Cloudflare Pages with these settings:
+## Current implementation notes
 
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Root directory: `/`
-- Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_UPLOAD_WORKER_URL`
-
-The `public/_redirects` file routes deep links such as `/projects/:id` and `/r/:token` back to the app.
-
-## Current implementation boundary
-
-The demo mode supports project creation, edits, deletion, local file selection/previews, review links, comments, and approval actions without external services. When configured, Supabase auth and project/comment/notification sync are active, reviewer links use the token-checked RPCs, and uploads/downloads use the R2 Worker. Original files are previewable in the browser for images, video, and PDFs; other document formats can be downloaded. Production use requires applying the SQL migration and deploying the Worker with its secrets.
-
-## Notifications
-
-Notifications are in-app only. The Worker writes file expiry reminders and deletion notices into the `notifications` table; there are no email, WhatsApp, or SMS notification integrations.
+Original-quality file upload, secure review links, file previews, comments, approvals, assignment status, saved colleagues, in-app notifications, retention reminders, responsive navigation, and light/dark and display-size controls are included. Some background cleanup and reminder automation requires the scheduled Worker configuration.
