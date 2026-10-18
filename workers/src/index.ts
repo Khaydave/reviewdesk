@@ -7,7 +7,7 @@ interface Env {
 }
 
 type FileRow = { id: string; project_id: string; uploaded_by: string; name: string; content_type: string; byte_size: number; object_key: string; version: number; uploaded_at: string; expires_at: string; reminder_sent_at: string | null }
-type ProjectRow = { id: string; owner_id: string; organization_id: string; title: string; review_token: string | null; allow_download: boolean; status: string }
+type ProjectRow = { id: string; owner_id: string; title: string; review_token: string | null; allow_download: boolean; status: string }
 
 const json = (data: unknown, status = 200, headers: HeadersInit = {}) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...headers } })
 const cleanName = (name: string) => name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(-110) || 'upload'
@@ -87,7 +87,7 @@ export default {
       const files = await fileResponse.json() as FileRow[]
       const file = files[0]
       if (!file || new Date(file.expires_at).getTime() <= Date.now()) return json({ error: 'This file is no longer available.' }, 404, headers)
-      const projectResponse = await supabaseFetch(env, `projects?id=eq.${file.project_id}&select=id,owner_id,organization_id,review_token,allow_download,status`)
+      const projectResponse = await supabaseFetch(env, `projects?id=eq.${file.project_id}&select=id,owner_id,review_token,allow_download,status`)
       const projects = await projectResponse.json() as ProjectRow[]
       const project = projects[0]
       if (!project) return json({ error: 'This project is no longer available.' }, 404, headers)
@@ -102,9 +102,9 @@ export default {
         const user = await authenticatedUser(request, env)
         authorized = Boolean(user && user.id === project.owner_id)
         if (!authorized && user && project.status !== 'Draft') {
-          const membershipResponse = await supabaseFetch(env, `organization_members?organization_id=eq.${project.organization_id}&user_id=eq.${user.id}&select=user_id`)
-          const memberships = membershipResponse.ok ? await membershipResponse.json() as Array<{ user_id: string }> : []
-          authorized = memberships.length > 0
+          const assignmentResponse = await supabaseFetch(env, `review_assignments?project_id=eq.${project.id}&reviewer_id=eq.${user.id}&select=reviewer_id`)
+          const assignments = assignmentResponse.ok ? await assignmentResponse.json() as Array<{ reviewer_id: string }> : []
+          authorized = assignments.length > 0
         }
       }
       if (!authorized) return json({ error: 'You do not have access to this file.' }, 403, headers)
