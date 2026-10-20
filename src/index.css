@@ -659,3 +659,36 @@ html[data-theme="dark"] .colleague-search-form .member-search{color:#c4d0e0}html
   .app-frame .editor-actions{grid-template-columns:minmax(0,1fr)}
   .app-frame .profile-card-heading{align-items:flex-start}
 }
+
+
+/* Dark theme contrast for profile, project details, and colleague rows. */
+html[data-theme="dark"] .app-frame .profile-card-heading h2,
+html[data-theme="dark"] .app-frame .profile-field-grid label,
+html[data-theme="dark"] .app-frame .profile-form-footer,
+html[data-theme="dark"] .app-frame .profile-form-footer p,
+html[data-theme="dark"] .app-frame .profile-privacy-note{color:#dce6f2}
+html[data-theme="dark"] .app-frame .profile-card-heading p,
+html[data-theme="dark"] .app-frame .profile-field-grid label>small{color:#aebbd0}
+html[data-theme="dark"] .app-frame .profile-field-grid input{border-color:#3a4b63;background:#101b2b;color:#e5edf8}
+html[data-theme="dark"] .app-frame .profile-field-grid input:disabled{border-color:#34465e;background:#1d2d43;color:#aebbd0}
+html[data-theme="dark"] .app-frame .profile-card-heading{border-color:#2b3b51}
+html[data-theme="dark"] .app-frame .profile-form-footer{border-color:#2b3b51}
+html[data-theme="dark"] .app-frame .profile-privacy-note{border-color:#344963;background:#1b2d46}
+html[data-theme="dark"] .app-frame .profile-privacy-note b,
+html[data-theme="dark"] .app-frame .profile-privacy-note svg{color:#b8ccec}
+html[data-theme="dark"] .app-frame .team-member-row,
+html[data-theme="dark"] .app-frame .member-pick,
+html[data-theme="dark"] .app-frame .reviewer-assignment,
+html[data-theme="dark"] .app-frame .assigned-row{border-color:#34465e;background:#1d2d43;color:#dce6f2}
+html[data-theme="dark"] .app-frame .member-pick b,
+html[data-theme="dark"] .app-frame .team-member-row b,
+html[data-theme="dark"] .app-frame .reviewer-assignment b,
+html[data-theme="dark"] .app-frame .assigned-main b{color:#e3ebf6}
+html[data-theme="dark"] .app-frame .member-pick small,
+html[data-theme="dark"] .app-frame .team-member-row small,
+html[data-theme="dark"] .app-frame .reviewer-assignment small,
+html[data-theme="dark"] .app-frame .assigned-main small{color:#aebbd0}
+html[data-theme="dark"] .app-frame .link-state:not(.live){border:1px solid #394b63;background:#26384f;color:#c4d0e0}
+html[data-theme="dark"] .app-frame .aside-note{border-color:#34465e;background:#1d2d43;color:#dce6f2}
+html[data-theme="dark"] .app-frame .aside-note>b{color:#e3ebf6}
+html[data-theme="dark"] .app-frame .aside-note p{color:#aebbd0}
