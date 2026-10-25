@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { AppState, Colleague, Project, ProjectFile, ProjectStatus, ReviewComment, User } from '../types'
+import type { AppState, Colleague, Project, ProjectFile, ProjectStatus, ReviewComment, SidebarItem, User } from '../types'
 
 const workerUrl = (import.meta.env.VITE_UPLOAD_WORKER_URL as string | undefined)?.replace(/\/$/, '')
 type CloudFile = { id: string; name: string; byte_size: number; content_type: string; uploaded_at: string; version: number }
@@ -7,6 +7,7 @@ type CloudComment = { id: string; author_name: string; body: string; created_at:
 type CloudAssignment = { id: string; reviewer_id: string; reviewer_name: string; username: string; token: string; status: 'Pending' | 'Changes requested' | 'Approved'; responded_at: string | null }
 type CloudProject = { id: string; owner_id: string; title: string; client: string; description: string; status: ProjectStatus; updated_at: string; due_date: string | null; retention_days: number; review_token: string | null; allow_download: boolean; project_files?: CloudFile[]; review_comments?: CloudComment[]; review_assignments?: CloudAssignment[] }
 type CloudNotice = { id: string; title: string; detail: string; created_at: string; read_at: string | null; project_id: string | null }
+type CloudSidebarItem = { item_type: SidebarItem['type']; item_id: string; is_pinned: boolean; pinned_at: string | null; last_opened_at: string | null }
 
 const mapFile = (f: CloudFile): ProjectFile => ({ id: f.id, name: f.name, size: Number(f.byte_size), type: f.content_type, uploadedAt: f.uploaded_at, version: f.version })
 const mapComment = (c: CloudComment): ReviewComment => ({ id: c.id, author: c.author_name, body: c.body, createdAt: c.created_at, kind: c.kind })
@@ -14,14 +15,15 @@ const mapProject = (p: CloudProject): Project => ({ id: p.id, ownerId: p.owner_i
 
 export async function loadCloudState(user: User): Promise<AppState> {
   if (!supabase) throw new Error('Supabase is not configured.')
-  const [profileResult, ownResult, assignmentResult, noticesResult, colleaguesResult] = await Promise.all([
+  const [profileResult, ownResult, assignmentResult, noticesResult, colleaguesResult, sidebarResult] = await Promise.all([
     supabase.from('profiles').select('display_name, username, organization, department, position').eq('id', user.id).maybeSingle(),
     supabase.from('projects').select('id').eq('owner_id', user.id),
     supabase.from('review_assignments').select('project_id').eq('reviewer_id', user.id),
     supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(100),
     supabase.from('colleague_connections').select('colleague_id, profiles!colleague_connections_colleague_id_fkey(display_name, username)').eq('owner_id', user.id).order('created_at', { ascending: false }),
+    supabase.from('user_sidebar_items').select('item_type, item_id, is_pinned, pinned_at, last_opened_at').eq('user_id', user.id),
   ])
-  for (const result of [profileResult, ownResult, assignmentResult, noticesResult, colleaguesResult]) if (result.error) throw result.error
+  for (const result of [profileResult, ownResult, assignmentResult, noticesResult, colleaguesResult, sidebarResult]) if (result.error) throw result.error
   const profile = profileResult.data as { display_name?: string; username?: string; organization?: string; department?: string; position?: string } | null
   const currentUser: User = { ...user, name: profile?.display_name || user.name, username: profile?.username || user.username, organization: profile?.organization || '', department: profile?.department || '', position: profile?.position || '' }
   const projectIds = [...new Set([...(ownResult.data || []).map(row => row.id as string), ...(assignmentResult.data || []).map(row => row.project_id as string)])]
@@ -36,7 +38,38 @@ export async function loadCloudState(user: User): Promise<AppState> {
     const item = raw as unknown as { colleague_id: string; profiles: { display_name: string; username: string } | null }
     return item.profiles ? [{ userId: item.colleague_id, name: item.profiles.display_name || item.profiles.username, username: item.profiles.username }] : []
   })
-  return { user: currentUser, projects, notices, colleagues }
+  const sidebarItems: SidebarItem[] = ((sidebarResult.data || []) as CloudSidebarItem[]).map(item => ({ type: item.item_type, itemId: item.item_id, pinnedAt: item.is_pinned ? item.pinned_at || undefined : undefined, lastOpenedAt: item.last_opened_at || undefined }))
+  return { user: currentUser, projects, notices, colleagues, sidebarItems }
+}
+
+export async function setCloudSidebarPin(userId: string, type: SidebarItem['type'], itemId: string, pinned: boolean) {
+  if (!supabase) return
+  const existingResult = await supabase.from('user_sidebar_items').select('last_opened_at, pinned_at').eq('user_id', userId).eq('item_type', type).eq('item_id', itemId).maybeSingle()
+  if (existingResult.error) throw existingResult.error
+  const existing = existingResult.data as { last_opened_at: string | null; pinned_at: string | null } | null
+  if (!pinned && !existing?.last_opened_at) {
+    const { error } = await supabase.from('user_sidebar_items').delete().eq('user_id', userId).eq('item_type', type).eq('item_id', itemId)
+    if (error) throw error
+    return
+  }
+  const now = new Date().toISOString()
+  const { error } = await supabase.from('user_sidebar_items').upsert({
+    user_id: userId, item_type: type, item_id: itemId, is_pinned: pinned,
+    pinned_at: pinned ? existing?.pinned_at || now : null, last_opened_at: existing?.last_opened_at || null,
+  }, { onConflict: 'user_id,item_type,item_id' })
+  if (error) throw error
+}
+
+export async function recordCloudSidebarOpen(userId: string, type: SidebarItem['type'], itemId: string) {
+  if (!supabase) return
+  const existingResult = await supabase.from('user_sidebar_items').select('is_pinned, pinned_at').eq('user_id', userId).eq('item_type', type).eq('item_id', itemId).maybeSingle()
+  if (existingResult.error) throw existingResult.error
+  const existing = existingResult.data as { is_pinned: boolean; pinned_at: string | null } | null
+  const { error } = await supabase.from('user_sidebar_items').upsert({
+    user_id: userId, item_type: type, item_id: itemId, is_pinned: existing?.is_pinned || false,
+    pinned_at: existing?.pinned_at || null, last_opened_at: new Date().toISOString(),
+  }, { onConflict: 'user_id,item_type,item_id' })
+  if (error) throw error
 }
 
 export async function saveCloudProfile(user: User) {

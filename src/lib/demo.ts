@@ -22,6 +22,7 @@ const seed: AppState = {
     { id: 'n2', title: 'Changes requested', detail: 'Product launch teaser', time: '1 hour ago', read: false, projectId: 'p2' },
     { id: 'n3', title: 'Your file expires soon', detail: 'launch-teaser-v1.mp4 · 6 days left', time: 'Yesterday', read: true, projectId: 'p2' },
   ],
+  sidebarItems: [],
 }
 const KEY = 'reviewdesk-demo-state-v2'
 export function searchDemoPeople(query: string, currentUser?: string): Colleague[] {
@@ -36,7 +37,7 @@ export function loadState(): AppState {
       const parsed = JSON.parse(saved) as Partial<AppState>
       const user = parsed.user ? { ...parsed.user, username: parsed.user.username || parsed.user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]+/g, '_') } : null
       const projects = (parsed.projects || seed.projects).map(project => ({ ...project, assignments: project.assignments || seed.projects.find(sample => sample.id === project.id)?.assignments || [] }))
-      return { user, projects, colleagues: parsed.colleagues || seed.colleagues, notices: parsed.notices || seed.notices }
+      return { user, projects, colleagues: parsed.colleagues || seed.colleagues, notices: parsed.notices || seed.notices, sidebarItems: parsed.sidebarItems || [] }
     }
   } catch { /* Reset damaged local demo data. */ }
   return seed

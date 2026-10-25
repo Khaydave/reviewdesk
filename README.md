@@ -13,7 +13,7 @@ Without environment variables, ReviewDesk runs in **local demo mode** with sampl
 ## Connect Supabase
 
 1. Create a Supabase project.
-2. In the Supabase SQL editor, run the migrations in order: `0001_reviewdesk.sql`, `0002_team_reviews.sql`, `0003_organization_accounts.sql`, `0004_individual_colleagues.sql`, then `0005_profile_details.sql`.
+2. In the Supabase SQL editor, run the migrations in order: `0001_reviewdesk.sql`, `0002_team_reviews.sql`, `0003_organization_accounts.sql`, `0004_individual_colleagues.sql`, `0005_profile_details.sql`, then `0006_sidebar_pins_and_recents.sql`.
 3. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to a local `.env` file or Cloudflare Pages environment variables.
 4. Enable email and password sign-in in Supabase Auth, then add your local and deployed app URLs to its allowed redirect URLs.
 

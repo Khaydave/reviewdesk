@@ -692,3 +692,53 @@ html[data-theme="dark"] .app-frame .link-state:not(.live){border:1px solid #394b
 html[data-theme="dark"] .app-frame .aside-note{border-color:#34465e;background:#1d2d43;color:#dce6f2}
 html[data-theme="dark"] .app-frame .aside-note>b{color:#e3ebf6}
 html[data-theme="dark"] .app-frame .aside-note p{color:#aebbd0}
+
+/* Personal work shortcuts inspired by the reference sidebar. */
+.side-top-actions{display:flex;align-items:center;gap:2px}
+.side-top-actions .icon-button{width:32px;height:32px}
+.sidebar-search-field{display:flex;align-items:center;gap:8px;min-height:39px;margin:0 1px 15px;padding:0 9px;border:1px solid #dce3ed;border-radius:8px;background:#f9fbfe;color:#748198}
+.sidebar-search-field input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#25364f;font-size:.875rem}
+.sidebar-search-field input::placeholder{color:#98a4b4}
+.sidebar-search-close{display:grid;place-items:center;width:24px;height:24px;border:0;border-radius:5px;background:transparent;color:#718096;cursor:pointer}
+.sidebar-work-sections{display:grid;gap:12px;max-height:40vh;margin:5px 0 12px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.sidebar-work-section{min-width:0}
+.sidebar-section-heading{display:flex;align-items:center;justify-content:space-between;width:100%;padding:1px 8px 6px;border:0;background:transparent;color:#718096;font-size:.75rem;font-weight:800;letter-spacing:.65px;text-align:left;cursor:pointer}
+.sidebar-section-heading svg{color:#8c98a8;transition:transform .16s ease}
+.sidebar-section-heading svg.collapsed{transform:rotate(-90deg)}
+.sidebar-section-heading.static{cursor:default}
+.sidebar-work-list{display:grid;gap:2px}
+.sidebar-work-row{display:flex;align-items:center;min-width:0;min-height:38px;padding:2px 4px;border-radius:7px}
+.sidebar-work-row:hover{background:#f4f7fb}
+.sidebar-work-link{display:flex;align-items:center;gap:8px;flex:1;min-width:0;color:#354760}
+.sidebar-work-icon{display:grid;place-items:center;flex:0 0 23px;height:25px;color:#7187a4}
+.sidebar-work-icon.review{color:#4f78b7}
+.sidebar-work-copy{display:block;min-width:0;flex:1}
+.sidebar-work-copy b,.sidebar-work-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sidebar-work-copy b{font-size:.875rem;font-weight:600;line-height:1.35}
+.sidebar-work-copy small{margin-top:1px;color:#8b97a8;font-size:.75rem;line-height:1.3}
+.sidebar-pin-button{display:grid;place-items:center;flex:0 0 27px;width:27px;height:27px;border:0;border-radius:6px;background:transparent;color:#9aa6b6;opacity:0;cursor:pointer}
+.sidebar-work-row:hover .sidebar-pin-button,.sidebar-pin-button:focus-visible,.sidebar-pin-button.pinned{opacity:1}
+.sidebar-pin-button.pinned{color:#2563eb}
+.sidebar-empty-note{margin:1px 8px 3px;color:#8b97a8;font-size:.8125rem;line-height:1.45}
+.sidebar-collapsed .side-top{flex-direction:column;gap:7px;padding-bottom:13px}
+.sidebar-collapsed .side-top-actions{gap:0}
+.sidebar-collapsed .side-top-actions .icon-button{width:28px;height:28px}
+.sidebar-collapsed .sidebar-work-sections,.sidebar-collapsed .sidebar-search-field{display:none}
+.project-row-wrap,.assigned-row-wrap{display:grid;grid-template-columns:minmax(0,1fr) 36px;align-items:center;gap:4px}
+.project-row-wrap .project-row,.assigned-row-wrap .assigned-row{min-width:0;width:100%}
+.dashboard-pin-button{display:grid;place-items:center;width:34px;height:34px;border:1px solid transparent;border-radius:7px;background:transparent;color:#8492a6;opacity:.72;cursor:pointer}
+.dashboard-pin-button:hover,.dashboard-pin-button:focus-visible{border-color:#dce5f2;background:#f4f7fb;color:#2563eb;opacity:1}
+.dashboard-pin-button.pinned{color:#2563eb;opacity:1}
+.assigned-row-wrap .assigned-row{flex:1}
+html[data-theme="dark"] .sidebar-search-field{border-color:#3a4b63;background:#101b2b;color:#aebbd0}
+html[data-theme="dark"] .sidebar-search-field input{color:#e5edf8}
+html[data-theme="dark"] .sidebar-search-field input::placeholder,html[data-theme="dark"] .sidebar-empty-note{color:#9baac0}
+html[data-theme="dark"] .sidebar-section-heading{color:#aebbd0}
+html[data-theme="dark"] .sidebar-section-heading svg{color:#93a4bb}
+html[data-theme="dark"] .sidebar-work-row:hover{background:#1d2d43}
+html[data-theme="dark"] .sidebar-work-link{color:#dce6f2}
+html[data-theme="dark"] .sidebar-work-copy small{color:#9baac0}
+html[data-theme="dark"] .sidebar-pin-button.pinned,html[data-theme="dark"] .dashboard-pin-button.pinned{color:#9fc2ff}
+html[data-theme="dark"] .dashboard-pin-button:hover,html[data-theme="dark"] .dashboard-pin-button:focus-visible{border-color:#394d67;background:#1d2d43;color:#a9caff}
+@media(max-width:800px){.sidebar-work-sections{max-height:none;overflow:visible}.sidebar-pin-button{opacity:1}.sidebar-collapsed .side-top{flex-direction:row;gap:4px;padding-bottom:20px}}
+@media(max-width:620px){.project-row-wrap,.assigned-row-wrap{grid-template-columns:minmax(0,1fr) 34px;gap:2px}.dashboard-pin-button{width:32px;height:32px}.sidebar-work-copy b{font-size:.875rem}}
