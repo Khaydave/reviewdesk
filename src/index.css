@@ -852,3 +852,20 @@ html[data-theme="dark"] .app-frame .review-queue-empty p{color:#a0aec2}
 @media(prefers-reduced-motion:reduce){
   .app-frame .app-rail-link,.app-frame .sidebar,.app-frame .app-main{transition:none!important}
 }
+
+/* Keep one workspace sidebar; the app rail was redundant with the labeled navigation. */
+.app-frame .app-rail{display:none!important}
+.app-frame .sidebar{left:0!important;width:248px!important}
+.app-frame.sidebar-collapsed .sidebar{left:0!important;width:82px!important}
+.app-frame .app-main{margin-left:248px!important}
+.app-frame.sidebar-collapsed .app-main{margin-left:82px!important}
+.app-frame .sidebar-work-sections{display:grid;flex:0 0 auto;min-height:152px;max-height:min(38vh,340px)}
+.app-frame.sidebar-collapsed .sidebar-work-sections,.app-frame.sidebar-collapsed .sidebar-search-field{display:none!important}
+@media(max-width:1100px) and (min-width:801px){
+  .app-frame .sidebar{width:248px!important}
+  .app-frame .app-main{margin-left:248px!important}
+  .app-frame.sidebar-collapsed .app-main{margin-left:82px!important}
+}
+@media(max-width:800px){
+  .app-frame .sidebar,.app-frame.sidebar-collapsed .sidebar{left:0!important;width:min(300px,calc(100vw - 48px))!important}
+}
